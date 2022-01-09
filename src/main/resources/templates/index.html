@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <link media="all" rel="stylesheet" th:href="@{/css/index.css}" type="text/css"/>
+    <title></title>
+</head>
+<style>
+
+</style>
+<body>
+<div>
+    <div>
+        <div class="tonal">
+            <a class="active" th:href="@{/}">Home</a>
+            <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin Panel</a>
+            <div class="login-panel-container">
+                <div sec:authorize="isAuthenticated()">
+                    <form class="login-panel-form" action="/logout">
+                        <button type="submit">Log out</button>
+                    </form>
+                </div>
+                <div sec:authorize="!isAuthenticated()">
+                    <form class="login-panel-form" action="/login">
+                        <button type="submit">Sign In</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <table class="user-table" sec:authorize="isAuthenticated()">
+        <tr>
+            <th>name</th>
+            <th>email</th>
+        </tr>
+        <tr th:each="user: ${users}">
+            <td th:text="${user.getName()}"></td>
+            <td th:text="${user.getLogin()}"></td>
+        </tr>
+    </table>
+    <table class="user-table" sec:authorize="!isAuthenticated()">
+        <h1>Hello</h1>
+        <p>Sign In or Sign Up for enjoy.</p>
+        <hr>
+    </table>
+</div>
+<script>
+
+</script>
+</body>
+</html>

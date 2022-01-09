@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <link media="all" rel="stylesheet" th:href="@{/css/index.css}" type="text/css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title></title>
+</head>
+<body>
+<div>
+    <div class="tonal">
+        <a th:href="@{/}">Home</a>
+        <a class="active" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin Panel</a>
+        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin/addUser}">Add User</a>
+        <div class="login-panel-container">
+            <div sec:authorize="isAuthenticated()">
+                <form class="login-panel-form" action="/logout">
+                    <button type="submit">Log out</button>
+                </form>
+            </div>
+            <div sec:authorize="!isAuthenticated()">
+                <form class="login-panel-form" action="/login">
+                    <button type="submit">Sign In</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <table sec:authorize="hasRole('ROLE_ADMIN')" class="user-table">
+        <tr>
+            <th>id</th>
+            <th>name</th>
+            <th>email</th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tr th:each="user: ${users}" th:with="user_role_name=${@environment.getProperty('kata.academy.admin.name')}">
+            <td th:text="${user.getId()}"></td>
+            <td th:text="${user.getName()}"></td>
+            <td th:text="${user.getLogin()}"></td>
+            <td th:each="role: ${user.getRoles()}">
+                <ul th:value="${role.getId()}">
+                    <li th:text="${role.getName()}"></li>
+                </ul>
+            </td>
+            <td>
+                <form action="#"
+                      th:action="@{'admin/delete={id}'(id=${user.getId()})}"
+                      th:method="deleteUser">
+                    <input type="hidden" name="_method" value="deleteUser"/>
+                    <button th:if="${user.getLogin()}!=${user_role_name}" class="btn danger" name="delete">
+                        <i class="fa fa-trash">
+                        </i>
+                        Delete
+                    </button>
+                    <input type="hidden" name="_method" value="delete">
+                </form>
+            </td>
+            <td>
+                <form action="#"
+                      th:action="@{'admin/edit={id}'(id=${user.getId()})}"
+                      th:method="editUser">
+                    <input type="hidden" name="_method" value="editUser"/>
+                    <button th:if="${user.getLogin()}!=${user_role_name}" class="btn success" name="edit">
+                        edit
+                    </button>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>
