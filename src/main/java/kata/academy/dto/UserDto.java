@@ -8,12 +8,9 @@ public class UserDto {
 
     private String name;
 
-
     private String login;
 
-
     private String password;
-
 
     private List<Long> roles;
 
@@ -26,21 +23,6 @@ public class UserDto {
         this.login = login;
         this.password = password;
         this.roles = roles;
-    }
-
-    public UserDto(Long id, String name, String login, String password, Long roles) {
-        this.id = id;
-        this.name = name;
-        this.login = login;
-        this.password = password;
-        this.roles = List.of(roles);
-    }
-
-    public UserDto(Long id, String name, String login, String password) {
-        this.id = id;
-        this.name = name;
-        this.login = login;
-        this.password = password;
     }
 
     public Long getId() {

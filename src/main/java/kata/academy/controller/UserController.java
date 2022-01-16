@@ -1,6 +1,8 @@
 package kata.academy.controller;
 
+import kata.academy.dto.RoleToDtoMapper;
 import kata.academy.dto.UserDto;
+import kata.academy.dto.UserToDtoMapper;
 import kata.academy.exception.UserAlreadyExist;
 import kata.academy.model.User;
 import kata.academy.service.RoleService;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.stream.Collectors;
+
 @Controller
 @RequestMapping("/user")
 public class UserController {
@@ -17,6 +21,20 @@ public class UserController {
     private UserService userService;
 
     private RoleService roleService;
+
+    private UserToDtoMapper userToDtoMapper;
+
+    private RoleToDtoMapper roleToDtoMapper;
+
+    @Autowired
+    public void setRoleToDtoMapper(RoleToDtoMapper roleToDtoMapper) {
+        this.roleToDtoMapper = roleToDtoMapper;
+    }
+
+    @Autowired
+    public void setUserToDtoMapper(UserToDtoMapper userToDtoMapper) {
+        this.userToDtoMapper = userToDtoMapper;
+    }
 
     @Autowired
     public void setRoleService(RoleService roleService) {
@@ -31,7 +49,9 @@ public class UserController {
     @GetMapping("/create")
     public String create(Model model) {
         model.addAttribute("user", new UserDto());
-        model.addAttribute("possible_roles", roleService.getAll());
+        model.addAttribute("possible_roles", roleService.getAll().stream()
+                .map(roleToDtoMapper::convertRoleToDto)
+                .collect(Collectors.toList()));
         model.addAttribute("error", "");
         return "createUser";
     }
@@ -47,7 +67,9 @@ public class UserController {
             return "redirect:/";
         } catch (UserAlreadyExist exception) {
             model.addAttribute("user", user);
-            model.addAttribute("possible_roles", roleService.getAll());
+            model.addAttribute("possible_roles", roleService.getAll()
+                    .stream()
+                    .map(roleToDtoMapper::convertRoleToDto));
             model.addAttribute("error", "такой login уже есть!");
         }
         return "createUser";
@@ -55,8 +77,10 @@ public class UserController {
 
     @GetMapping("/edit/{id}")
     public String edit(Model model, @PathVariable Long id) {
-        model.addAttribute("user", userService.getById(id));
-        model.addAttribute("possible_roles", roleService.getAll());
+        model.addAttribute("user", userToDtoMapper.convertUserToDto(userService.getById(id)));
+        model.addAttribute("possible_roles", roleService.getAll().stream()
+                .map(roleToDtoMapper::convertRoleToDto)
+                .collect(Collectors.toList()));
         model.addAttribute("error", "");
         return "editUser";
     }
@@ -68,7 +92,9 @@ public class UserController {
             return "redirect:/";
         } catch (UserAlreadyExist exception) {
             model.addAttribute("user", user);
-            model.addAttribute("possible_roles", roleService.getAll());
+            model.addAttribute("possible_roles", roleService.getAll()
+                    .stream()
+                    .map(roleToDtoMapper::convertRoleToDto));
             model.addAttribute("error", "такой login уже есть!");
         }
         return "editUser";
@@ -79,5 +105,4 @@ public class UserController {
         userService.deleteUser(id);
         return "redirect:/";
     }
-
 }

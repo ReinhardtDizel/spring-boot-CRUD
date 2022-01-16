@@ -5,8 +5,8 @@
       lang="en">
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
-    <link href="../styles/adduser.css" th:href="@{/styles/adduser.css}" rel="stylesheet"/>
-    <link href="../styles/index.css" th:href="@{/styles/index.css}" rel="stylesheet"/>
+    <link media="all" rel="stylesheet" th:href="@{/css/index.css}" type="text/css"/>
+    <link media="all" rel="stylesheet" th:href="@{/css/adduser.css}" type="text/css"/>
     <title></title>
 </head>
 <body>
@@ -76,12 +76,14 @@
                 <label>Roles:</label>
             </div>
             <div class="col-75">
-                <!--/*@thymesVar id="possible_roles" type="java.util.Set<kata.academy.model.Role>"*/-->
+                <!--/*@thymesVar id="possible_roles" type="java.util.List<kata.academy.dto.RoleDto>"*/-->
                 <th:block th:each="possible_role: ${possible_roles}">
-                    <!--/*@thymesVar id="possible_role" type="kata.academy.model.Role"*/-->
+                    <!--/*@thymesVar id="possible_role" type="kata.academy.dto.RoleDto"*/-->
                     <!--/*@thymesVar id="roles" type="java.util.Set<kata.academy.model.Role>"*/-->
-                    <input id="role_checkbox" type="checkbox" th:field="*{roles}" th:text="${possible_role.getName()}"
-                           th:value="${possible_role.getId()}" class="m-2" onclick="roleSelect(this)"/>
+                    <!--/*@thymesVar id="possible_role.getId()" type="java.lang.Long"*/-->
+                    <input id="role_checkbox" type="checkbox" th:field="*{roles}"
+                           th:text="${possible_role.getName()}"
+                           th:value="${possible_role.getId()}" class="m-2"/>
                 </th:block>
                 <label for="role_checkbox">&nbsp;<b class="role_checkbox_error" id="role_checkbox_error"></b></label>
             </div>
@@ -95,11 +97,11 @@
 <script>
     let hasRole = false;
 
-    function roleSelect(role) {
-        hasRole = role.checked;
-    }
-
     function checkRoleSelect() {
+        let checkboxes = document.querySelectorAll('input:checked');
+        if (checkboxes.length > 0) {
+            hasRole = true;
+        }
         if (hasRole) {
             document.getElementById("role_checkbox_error").textContent = "";
         } else {
