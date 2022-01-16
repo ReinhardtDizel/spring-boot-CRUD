@@ -25,7 +25,8 @@ public class MapperConfig {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration()
                 .setMatchingStrategy(MatchingStrategies.LOOSE)
-                .setFieldAccessLevel(AccessLevel.PRIVATE);
+                .setFieldAccessLevel(AccessLevel.PUBLIC);
+
         mapper.typeMap(User.class, UserDto.class)
                 .addMappings(mapping -> mapping.using(rolesListConverter)
                         .map(User::getRoles, UserDto::setRoles));
