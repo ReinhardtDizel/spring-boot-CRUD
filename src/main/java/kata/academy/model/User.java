@@ -1,55 +1,44 @@
 package kata.academy.model;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
-@Table(name = "user")
+@Table(schema = "test", name = "user")
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name = "increment", strategy = "increment")
-    @Column(name = "id", updatable = false, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "login", nullable = false, unique = true)
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "login", nullable = false)
     private String login;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "name")
-    private String name;
-
-    @ManyToMany(fetch = FetchType.EAGER,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            })
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+            inverseJoinColumns = @JoinColumn(name = "roles_id"))
+
     private Set<Role> roles = new HashSet<>();
+
+    public User() {
+    }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
     }
 
     public String getName() {
@@ -60,16 +49,20 @@ public class User implements UserDetails {
         this.name = name;
     }
 
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
     public Set<Role> getRoles() {
         return roles;
     }
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
-    }
-
-    public void addRole(Role role) {
-        this.roles.add(role);
     }
 
     @Override
@@ -116,21 +109,21 @@ public class User implements UserDetails {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
         User user = (User) o;
-        return id.equals(user.id) && login.equals(user.login) && password.equals(user.password) && name.equals(user.name) && roles.equals(user.roles);
+        return Objects.equals(id, user.id) && name.equals(user.name) && login.equals(user.login) && password.equals(user.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, login, password, name, roles);
+        return Objects.hash(id, name, login, password);
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", name='" + name + '\'' +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
-                ", name='" + name + '\'' +
                 ", roles=" + roles +
                 '}';
     }

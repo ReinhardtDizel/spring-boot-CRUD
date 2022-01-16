@@ -1,27 +1,22 @@
 package kata.academy.service;
 
+import kata.academy.dto.UserDto;
+import kata.academy.model.Role;
 import kata.academy.model.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
-    void save(User user);
+    void updateUser(UserDto user, List<Role> roles);
 
-    void delete(User user);
+    User getById(long id);
 
-    void deleteById(Long id);
+    User getUserByLogin(String s);
 
-    boolean existById(Long id);
+    List<User> getAll();
 
-    Optional<User> getUserByLogin(String login);
+    void saveUser(User user, List<Role> roles);
 
-    Optional<User> getById(Long id);
-
-    void updateUser(User user);
-
-    List<User> getUsers();
-
-    List<User> getUsersWithoutAdminInfo();
+    void deleteUser(long id);
 }
 

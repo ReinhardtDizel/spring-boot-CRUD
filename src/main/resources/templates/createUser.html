@@ -14,7 +14,8 @@
     <!--Навигационная панель с logout-->
     <div class="topnav">
         <a th:href="@{/}">Home</a>
-        <a class="active" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin Panel</a>
+        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin Panel</a>
+        <a class="active" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/user/create}">Add User</a>
         <div class="login-panel-container">
             <div sec:authorize="isFullyAuthenticated()">
                 <form class="login-panel-form" action="/logout">
@@ -31,25 +32,16 @@
     <!---------------------------------->
 </div>
 <div class="container">
-    <form id="create_form" sec:authorize="hasRole('ROLE_ADMIN')" th:action="@{'/user/edit/{id}'(id=${user.getId()})}"
-          method="post"
+    <form id="create_form" sec:authorize="hasRole('ROLE_ADMIN')" th:action="@{/user/create}" method="post"
           th:object="${user}">
-        <h2>Edit User Form</h2>
-        <div class="row">
-            <div class="col-25">
-                <label for="id"></label>
-            </div>
-            <div class="col-75">
-                <input id="id" name="id" type="hidden" th:field="*{id}">
-            </div>
-        </div>
-
+        <h2>Add new User Form</h2>
         <div class="row">
             <div class="col-25">
                 <label for="name">User Name</label>
             </div>
             <div class="col-75">
-                <input required type="text" id="name" name="name" placeholder="Name.." th:field="*{name}">
+                <input required type="text" id="name" name="name" placeholder="Name.." th:field="*{name}"
+                >
             </div>
         </div>
 
@@ -58,16 +50,18 @@
                 <label for="login">User Login&nbsp;<b class="login_error" th:text="${error}"></b></label>
             </div>
             <div class="col-75">
-                <input required type="text" id="login" name="login" placeholder="Login.." th:field="*{login}">
+                <input required type="text" id="login" name="login" placeholder="Login.." th:field="*{login}"
+                >
             </div>
         </div>
 
         <div class="row">
             <div class="col-25">
-                <label for="ps">User Password</label>
+                <label for="password">User Password</label>
             </div>
             <div class="col-75">
-                <input required type="password" id="ps" placeholder="Password.." th:field="*{password}">
+                <input required type="password" id="password" placeholder="Password.." th:field="*{password}"
+                >
             </div>
         </div>
 
@@ -76,16 +70,19 @@
                 <label>Roles:</label>
             </div>
             <div class="col-75">
-                <!--/*@thymesVar id="possible_roles" type="java.util.List<kata.academy.dto.RoleDto>"*/-->
+                <!--/*@thymesVar id="possible_roles" type="java.util.List<kata.academy.model.Role>"*/-->
                 <th:block th:each="possible_role: ${possible_roles}">
-                    <!--/*@thymesVar id="possible_role" type="kata.academy.dto.RoleDto"*/-->
+                    <!--/*@thymesVar id="possible_role" type="kata.academy.model.Role"*/-->
                     <!--/*@thymesVar id="roles" type="java.util.Set<kata.academy.model.Role>"*/-->
-                    <!--/*@thymesVar id="possible_role.getId()" type="java.lang.Long"*/-->
-                    <input id="role_checkbox" type="checkbox" th:field="*{roles}"
-                           th:text="${possible_role.getName()}"
-                           th:value="${possible_role.getId()}" class="m-2"/>
+                    <input id="role_checkbox" type="checkbox" th:field="*{roles}" th:text="${possible_role.name}"
+                           th:value="${possible_role.id}" class="m-2"/>
                 </th:block>
                 <label for="role_checkbox">&nbsp;<b class="role_checkbox_error" id="role_checkbox_error"></b></label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-25">
             </div>
         </div>
 

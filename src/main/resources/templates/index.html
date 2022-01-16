@@ -8,49 +8,49 @@
     <link media="all" rel="stylesheet" th:href="@{/css/index.css}" type="text/css"/>
     <title></title>
 </head>
-<style>
-
-</style>
 <body>
 <div>
-    <div>
-        <div class="tonal">
-            <a class="active" th:href="@{/}">Home</a>
-            <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin Panel</a>
-            <div class="login-panel-container">
-                <div sec:authorize="isAuthenticated()">
-                    <form class="login-panel-form" action="/logout">
-                        <button type="submit">Log out</button>
-                    </form>
-                </div>
-                <div sec:authorize="!isAuthenticated()">
-                    <form class="login-panel-form" action="/login">
-                        <button type="submit">Sign In</button>
-                    </form>
-                </div>
+    <!--Навигационная панель с logout-->
+    <div class="topnav">
+        <a class="active" th:href="@{/}">Home</a>
+        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin Panel</a>
+        <div class="login-panel-container">
+            <div sec:authorize="isFullyAuthenticated()">
+                <form class="login-panel-form" action="/logout">
+                    <button type="submit">Log out</button>
+                </form>
+            </div>
+            <div sec:authorize="!isAuthenticated()">
+                <form class="login-panel-form" action="/login">
+                    <button type="submit">Sign In</button>
+                </form>
             </div>
         </div>
     </div>
+    <!---------------------------------->
 </div>
 <div class="container">
     <table class="user-table" sec:authorize="isAuthenticated()">
         <tr>
             <th>name</th>
-            <th>email</th>
+            <th>login</th>
+            <th>role</th>
         </tr>
-        <tr th:each="user: ${users}">
-            <td th:text="${user.getName()}"></td>
-            <td th:text="${user.getLogin()}"></td>
+        <!--/*@thymesVar id="users" type="java.util.List<kata.academy.model.User>"*/-->
+        <tr id="users" th:each="user: ${users}">
+            <!--/*@thymesVar id="name" type="java.lang.String"*/-->
+            <td th:text="${user.name}"></td>
+            <!--/*@thymesVar id="login" type="java.lang.String"*/-->
+            <td th:text="${user.login}"></td>
+            <!--/*@thymesVar id="login" type="java.util.Set<kata.academy.model.Role>"*/-->
+            <td th:text="${user.roles}"></td>
         </tr>
     </table>
-    <table class="user-table" sec:authorize="!isAuthenticated()">
+    <table class="user-table" sec:authorize="isAnonymous()">
         <h1>Hello</h1>
         <p>Sign In or Sign Up for enjoy.</p>
         <hr>
     </table>
 </div>
-<script>
-
-</script>
 </body>
 </html>
