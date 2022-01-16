@@ -8,29 +8,29 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "role")
+@Table(schema = "test", name = "role")
 public class Role implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "name", unique = true, nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Transient
-    @ManyToMany(fetch = FetchType.EAGER,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            }, mappedBy = "roles")
     private Set<User> users = new HashSet<>();
 
     public Role() {
     }
 
-    public Role(String name) {
-        this.name = name;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -49,14 +49,6 @@ public class Role implements GrantedAuthority {
         this.users = users;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     @Override
     public String getAuthority() {
         return name;
@@ -67,20 +59,16 @@ public class Role implements GrantedAuthority {
         if (this == o) return true;
         if (!(o instanceof Role)) return false;
         Role role = (Role) o;
-        return name.equals(role.name);
+        return Objects.equals(id, role.id) && name.equals(role.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(id, name);
     }
 
     @Override
     public String toString() {
-        return "Role{" +
-                "id=" + id +
-                ", users=" + users +
-                ", name='" + name + '\'' +
-                '}';
+        return name;
     }
 }

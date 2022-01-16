@@ -5,18 +5,19 @@
       lang="en">
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
-    <link media="all" rel="stylesheet" th:href="@{/css/index.css}" type="text/css"/>
+    <link href="../styles/index.css" th:href="@{/styles/index.css}" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title></title>
 </head>
 <body>
 <div>
-    <div class="tonal">
+    <!--Навигационная панель с logout-->
+    <div class="topnav">
         <a th:href="@{/}">Home</a>
         <a class="active" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin Panel</a>
-        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin/addUser}">Add User</a>
+        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/user/create}">Add User</a>
         <div class="login-panel-container">
-            <div sec:authorize="isAuthenticated()">
+            <div sec:authorize="isFullyAuthenticated()">
                 <form class="login-panel-form" action="/logout">
                     <button type="submit">Log out</button>
                 </form>
@@ -28,31 +29,32 @@
             </div>
         </div>
     </div>
+    <!---------------------------------->
 </div>
 <div class="container">
     <table sec:authorize="hasRole('ROLE_ADMIN')" class="user-table">
         <tr>
             <th>id</th>
             <th>name</th>
-            <th>email</th>
+            <th>login</th>
             <th></th>
             <th></th>
         </tr>
-        <tr th:each="user: ${users}" th:with="user_role_name=${@environment.getProperty('kata.academy.admin.name')}">
-            <td th:text="${user.getId()}"></td>
-            <td th:text="${user.getName()}"></td>
-            <td th:text="${user.getLogin()}"></td>
-            <td th:each="role: ${user.getRoles()}">
-                <ul th:value="${role.getId()}">
-                    <li th:text="${role.getName()}"></li>
-                </ul>
-            </td>
+        <!--/*@thymesVar id="users" type="java.util.List<kata.academy.model.User>"*/-->
+        <tr th:each="user: ${users}">
+            <!--/*@thymesVar id="id" type="java.lang.Long"*/-->
+            <td th:text="${user.id}"></td>
+            <!--/*@thymesVar id="name" type="java.lang.String"*/-->
+            <td th:text="${user.name}"></td>
+            <!--/*@thymesVar id="login" type="java.lang.String"*/-->
+            <td th:text="${user.login}"></td>
+            <!--/*@thymesVar id="login" type="java.util.Set<kata.academy.model.Role>"*/-->
+            <td th:text="${user.roles}"></td>
             <td>
                 <form action="#"
-                      th:action="@{'admin/delete={id}'(id=${user.getId()})}"
+                      th:action="@{'user/delete/{id}'(id=${user.getId()})}"
                       th:method="deleteUser">
-                    <input type="hidden" name="_method" value="deleteUser"/>
-                    <button th:if="${user.getLogin()}!=${user_role_name}" class="btn danger" name="delete">
+                    <button class="btn danger" name="delete">
                         <i class="fa fa-trash">
                         </i>
                         Delete
@@ -61,14 +63,11 @@
                 </form>
             </td>
             <td>
-                <form action="#"
-                      th:action="@{'admin/edit={id}'(id=${user.getId()})}"
-                      th:method="editUser">
-                    <input type="hidden" name="_method" value="editUser"/>
-                    <button th:if="${user.getLogin()}!=${user_role_name}" class="btn success" name="edit">
+                <a th:href="@{user/edit/{id}(id=${user.getId()})}">
+                    <button class="btn success" name="edit">
                         edit
                     </button>
-                </form>
+                </a>
             </td>
         </tr>
     </table>

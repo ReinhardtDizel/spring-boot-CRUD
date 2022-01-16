@@ -5,34 +5,28 @@
       lang="en">
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
-    <link media="all" rel="stylesheet" th:href="@{/css/login.css}" type="text/css"/>
+    <link href="../styles/main.css" th:href="@{/styles/main.css}" rel="stylesheet"/>
     <title></title>
 </head>
-<style>
-
-</style>
 <body>
 <h1>Login page</h1>
-    <div class="login-container">
+<div class="login-container">
 
-        <form class="login-container-form" method="post">
-            <label for="username">Username</label>:
-            <input id="username" type="text" name="j_username"/>
-            <label for="password">Password</label>:
-            <input id="password" type="password" name="j_password"/>
-            <input type="submit" action="/login"/>
+    <form class="login-container-form" method="post" >
+        <label for="username">Username</label>:
+        <input id="username" type="text" name="j_username"/>
+        <label for="password">Password</label>:
+        <input id="password" type="password" name="j_password"/>
+        <input type="submit" action="/login"/>
 
-            <a class="btn success" th:href="@{/signup}">
-                Sign Un
-            </a>
-            <a class="btn danger" th:href="@{/}">
-                Cancel
-            </a>
+        <a class="btn success" th:href="@{/signup}">
+            Sign Un
+        </a>
+        <a class="btn danger" th:href="@{/}">
+            Cancel
+        </a>
 
-        </form>
-    </div>
-<script>
-
-</script>
+    </form>
+</div>
 </body>
 </html>
