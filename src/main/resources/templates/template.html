@@ -49,27 +49,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-dark">
-                            <thead>
-                            <tr>
-                                <th scope="col">name</th>
-                                <th scope="col">login</th>
-                                <th scope="col">role</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <!--/*@thymesVar id="users" type="java.util.List<kata.academy.model.User>"*/-->
-                            <tr id="users" th:each="user: ${users}">
-                                <!--/*@thymesVar id="name" type="java.lang.String"*/-->
-                                <td th:text="${user.name}"></td>
-                                <!--/*@thymesVar id="login" type="java.lang.String"*/-->
-                                <td th:text="${user.login}"></td>
-                                <!--/*@thymesVar id="login" type="java.util.Set<kata.academy.model.Role>"*/-->
-                                <td th:text="${user.roles}"></td>
-                            </tr>
-                            </tbody>
-                        </table>
+                    <div class="py-5 text-center">
+
+
                     </div>
                 </div>
             </div>

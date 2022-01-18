@@ -2,76 +2,165 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      lang="en">
+      lang="en"
+      class="h-100"
+>
 <head>
-    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
-    <link media="all" rel="stylesheet" th:href="@{/css/index.css}" type="text/css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+          type="text/css">
+    <link media="all" rel="stylesheet" th:href="@{/css/pingendo.css}" type="text/css"/>
+
 </head>
-<body>
-<div>
-    <!--Навигационная панель с logout-->
-    <div class="topnav">
-        <a th:href="@{/}">Home</a>
-        <a class="active" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin Panel</a>
-        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/user/create}">Add User</a>
-        <div class="login-panel-container">
-            <div sec:authorize="isFullyAuthenticated()">
-                <form class="login-panel-form" action="/logout">
-                    <button type="submit">Log out</button>
-                </form>
-            </div>
-            <div sec:authorize="!isAuthenticated()">
-                <form class="login-panel-form" action="/login">
-                    <button type="submit">Sign In</button>
-                </form>
+
+<!--============================================================================================================-->
+<!--header-->
+<body class="h-100">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="container">
+        <button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse"
+                data-target="#navbar12">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar12"><a class="navbar-brand d-none d-md-block" href="#">
+            <i class="fa d-inline fa-lg fa-circle"></i>
+            <b></b>
+        </a>
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin
+                    Panel</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+            </ul>
+            <ul sec:authorize="!isAuthenticated()" class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" th:href="@{/login}">Log in</a></li>
+                <li class="nav-item"><a class="nav-link text-primary" th:href="@{/signup}">Register</a></li>
+            </ul>
+            <ul sec:authorize="isFullyAuthenticated()" class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Log out</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--============================================================================================================-->
+<div class="py-5 text-center bg-dark text-white h-100"
+     style="	background-image: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url(https://pingendo.com/site-assets/cover.jpg);	background-position: top left, top left;	background-size: 100%, 100%;	background-repeat: repeat, repeat;	box-shadow: 0px 0px 4px  black;">
+    <div class="py-5 h-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table sec:authorize="hasRole('ROLE_ADMIN')" class="table table-striped table-dark">
+                            <thead>
+                            <tr>
+                                <th scope="col">id</th>
+                                <th scope="col">name</th>
+                                <th scope="col">login</th>
+                                <th scope="col">role</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!--/*@thymesVar id="users" type="java.util.List<kata.academy.model.User>"*/-->
+                            <tr th:each="user: ${users}">
+                                <!--/*@thymesVar id="id" type="java.lang.Long"*/-->
+                                <td th:text="${user.id}"></td>
+                                <!--/*@thymesVar id="name" type="java.lang.String"*/-->
+                                <td th:text="${user.name}"></td>
+                                <!--/*@thymesVar id="login" type="java.lang.String"*/-->
+                                <td th:text="${user.login}"></td>
+                                <!--/*@thymesVar id="login" type="java.util.Set<kata.academy.model.Role>"*/-->
+                                <td th:text="${user.roles}"></td>
+                                <td>
+                                    <form action="#"
+                                          th:action="@{'user/delete/{id}'(id=${user.getId()})}"
+                                          th:method="delete">
+                                        <button name="delete" class="btn btn-outline-danger">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
+                                                <path fill-rule="evenodd"
+                                                      d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
+                                            </svg>
+                                            Delete
+                                        </button>
+                                        <input type="hidden" name="_method" value="delete">
+                                    </form>
+                                </td>
+                                <td>
+                                    <a class="btn btn-success" th:href="@{user/edit/{id}(id=${user.getId()})}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"></path>
+                                        </svg>
+                                        Edit
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="float-right">
+                                <a class="btn btn-primary" th:href="@{/user/create}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                         fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
+                                        <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
+                                        <path fill-rule="evenodd"
+                                              d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"></path>
+                                    </svg>
+                                    Create User
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <!---------------------------------->
 </div>
-<div class="container">
-    <table sec:authorize="hasRole('ROLE_ADMIN')" class="user-table">
-        <tr>
-            <th>id</th>
-            <th>name</th>
-            <th>login</th>
-            <th></th>
-            <th></th>
-        </tr>
-        <!--/*@thymesVar id="users" type="java.util.List<kata.academy.model.User>"*/-->
-        <tr th:each="user: ${users}">
-            <!--/*@thymesVar id="id" type="java.lang.Long"*/-->
-            <td th:text="${user.id}"></td>
-            <!--/*@thymesVar id="name" type="java.lang.String"*/-->
-            <td th:text="${user.name}"></td>
-            <!--/*@thymesVar id="login" type="java.lang.String"*/-->
-            <td th:text="${user.login}"></td>
-            <!--/*@thymesVar id="login" type="java.util.Set<kata.academy.model.Role>"*/-->
-            <td th:text="${user.roles}"></td>
-            <td>
-                <form action="#"
-                      th:action="@{'user/delete/{id}'(id=${user.getId()})}"
-                      th:method="deleteUser">
-                    <button class="btn danger" name="delete">
-                        <i class="fa fa-trash">
-                        </i>
-                        Delete
-                    </button>
-                    <input type="hidden" name="_method" value="delete">
-                </form>
-            </td>
-            <td>
-                <a th:href="@{user/edit/{id}(id=${user.getId()})}">
-                    <button class="btn success" name="edit">
-                        edit
-                    </button>
-                </a>
-            </td>
-        </tr>
-    </table>
+<!--============================================================================================================-->
+<!--footer-->
+<div class="py-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-6 p-3">
+                <img src="https://kata.academy/images/icons/logo2.svg" alt="">
+            </div>
+            <div class="col-lg-4 col-6 p-3">
+                <p>
+                    <a href="tel:8 800 350—32—96">8 800 350 32 96</a>
+                </p>
+                <p class="mb-0">
+                    <a href="mailto:info@kata.academy">info@kata.academy</a>
+                </p>
+            </div>
+            <div class="col-md-4 p-3">
+                <h5><b>About</b></h5>
+                <p class="mb-0">
+                    text....
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <p class="mb-0 mt-2">© 2021 KATA Programming Academy</p>
+            </div>
+        </div>
+    </div>
 </div>
-
+<!--============================================================================================================-->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 </body>
 </html>

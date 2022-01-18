@@ -2,97 +2,185 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      lang="en">
+      lang="en"
+      class="h-100"
+>
 <head>
-    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
-    <link media="all" rel="stylesheet" th:href="@{/css/index.css}" type="text/css"/>
-    <link media="all" rel="stylesheet" th:href="@{/css/adduser.css}" type="text/css"/>
-    <title></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+          type="text/css">
+    <link media="all" rel="stylesheet" th:href="@{/css/pingendo.css}" type="text/css"/>
 </head>
-<body>
-<div>
-    <!--Навигационная панель с logout-->
-    <div class="topnav">
-        <a th:href="@{/}">Home</a>
-        <a class="active" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin Panel</a>
-        <div class="login-panel-container">
-            <div sec:authorize="isFullyAuthenticated()">
-                <form class="login-panel-form" action="/logout">
-                    <button type="submit">Log out</button>
-                </form>
-            </div>
-            <div sec:authorize="!isAuthenticated()">
-                <form class="login-panel-form" action="/login">
-                    <button type="submit">Sign In</button>
-                </form>
+
+<!--============================================================================================================-->
+<!--header-->
+<body class="h-100">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="container">
+        <button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse"
+                data-target="#navbar12">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar12"><a class="navbar-brand d-none d-md-block" href="#">
+            <i class="fa d-inline fa-lg fa-circle"></i>
+            <b></b>
+        </a>
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin
+                    Panel</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+            </ul>
+            <ul sec:authorize="!isAuthenticated()" class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" th:href="@{/login}">Log in</a></li>
+                <li class="nav-item"><a class="nav-link text-primary" th:href="@{/signup}">Register</a></li>
+            </ul>
+            <ul sec:authorize="isFullyAuthenticated()" class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Log out</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--============================================================================================================-->
+<div class="py-5 text-center bg-dark text-white h-100"
+     style="	background-image: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url(https://pingendo.com/site-assets/cover.jpg);	background-position: top left, top left;	background-size: 100%, 100%;	background-repeat: repeat, repeat;	box-shadow: 0px 0px 4px  black;">
+    <div class="py-5 h-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="py-5 text-center">
+
+                        <div class="py-5">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h1>User Edit Form</h1>
+                                        <p class="mb-4">Тут можно редактировать поля юзера и выбрать роль</p>
+                                        <div class="row">
+                                            <div class="col-md-3 order-3 order-md-1">
+                                                <img class="img-fluid d-block"
+                                                     src="https://platform.kata.academy/images/man.png">
+                                            </div>
+                                            <div class="d-flex order-1 order-md-2 flex-grow-0 flex-column p-0 col-8 col-md-6">
+
+                                                <form id="c_form-h" class="pi-draggable" draggable="true "
+                                                      sec:authorize="hasRole('ROLE_ADMIN')"
+                                                      th:action="@{'/user/edit/{id}'(id=${user.getId()})}"
+                                                      method="post"
+                                                      th:object="${user}">
+
+                                                    <div class="form-group row">
+                                                        <label for="input-id"
+                                                               class="col-2 col-form-label"></label>
+                                                        <div class="col-10">
+                                                            <input type="hidden" class="form-control" id="input-id"
+                                                                   th:field="*{id}">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label for="input-name"
+                                                               class="col-2 col-form-label">Name</label>
+                                                        <div class="col-10">
+                                                            <input required type="text" class="form-control"
+                                                                   id="input-name"
+                                                                   th:placeholder="*{name}"
+                                                                   th:field="*{name}">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label for="input-mail"
+                                                               class="col-2 col-form-label">E-mail</label>
+                                                        <div class="col-10">
+                                                            <input required type="email" class="form-control"
+                                                                   id="input-mail"
+                                                                   th:placeholder="*{login}"
+                                                                   th:field="*{login}">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label for="input-password" class="col-2 col-form-label">Password</label>
+                                                        <div class="col-10">
+                                                            <input required type="password" class="form-control"
+                                                                   id="input-password" placeholder="Password"
+                                                                   th:field="*{password}">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <div class="col-10">
+                                                            <div class="form-check form-check-inline">
+
+                                                                <th:block th:each="possible_role: ${possible_roles}">
+
+                                                                    <input class="form-check-input" type="checkbox"
+                                                                           id="inlineCheckbox1" value="option1"
+                                                                           th:field="*{roles}"
+                                                                           th:text="${possible_role.getName()}"
+                                                                           th:value="${possible_role.getId()}">
+                                                                </th:block>
+
+                                                                <label class="form-check-label"
+                                                                       for="inlineCheckbox1">
+                                                                    &nbsp;<b class="role_checkbox_error"
+                                                                             id="role_checkbox_error"></b>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row mx-5">
+                                                        <button type="submit" class="btn btn-primary mx-3" onclick="checkRoleSelect(this)">Submit
+                                                        </button>
+                                                    </div>
+                                                </form>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <!---------------------------------->
 </div>
-<div class="container">
-    <form id="create_form" sec:authorize="hasRole('ROLE_ADMIN')" th:action="@{'/user/edit/{id}'(id=${user.getId()})}"
-          method="post"
-          th:object="${user}">
-        <h2>Edit User Form</h2>
+<!--============================================================================================================-->
+<!--footer-->
+<div class="py-3">
+    <div class="container">
         <div class="row">
-            <div class="col-25">
-                <label for="id"></label>
+            <div class="col-lg-4 col-6 p-3">
+                <img src="https://kata.academy/images/icons/logo2.svg" alt="">
             </div>
-            <div class="col-75">
-                <input id="id" name="id" type="hidden" th:field="*{id}">
+            <div class="col-lg-4 col-6 p-3">
+                <p>
+                    <a href="tel:8 800 350—32—96">8 800 350 32 96</a>
+                </p>
+                <p class="mb-0">
+                    <a href="mailto:info@kata.academy">info@kata.academy</a>
+                </p>
+            </div>
+            <div class="col-md-4 p-3">
+                <h5><b>About</b></h5>
+                <p class="mb-0">
+                    text....
+                </p>
             </div>
         </div>
-
         <div class="row">
-            <div class="col-25">
-                <label for="name">User Name</label>
-            </div>
-            <div class="col-75">
-                <input required type="text" id="name" name="name" placeholder="Name.." th:field="*{name}">
+            <div class="col-md-12 text-center">
+                <p class="mb-0 mt-2">© 2021 KATA Programming Academy</p>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-25">
-                <label for="login">User Login&nbsp;<b class="login_error" th:text="${error}"></b></label>
-            </div>
-            <div class="col-75">
-                <input required type="text" id="login" name="login" placeholder="Login.." th:field="*{login}">
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-25">
-                <label for="ps">User Password</label>
-            </div>
-            <div class="col-75">
-                <input required type="password" id="ps" placeholder="Password.." th:field="*{password}">
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-25">
-                <label>Roles:</label>
-            </div>
-            <div class="col-75">
-                <!--/*@thymesVar id="possible_roles" type="java.util.List<kata.academy.dto.RoleDto>"*/-->
-                <th:block th:each="possible_role: ${possible_roles}">
-                    <!--/*@thymesVar id="possible_role" type="kata.academy.dto.RoleDto"*/-->
-                    <!--/*@thymesVar id="roles" type="java.util.Set<kata.academy.model.Role>"*/-->
-                    <!--/*@thymesVar id="possible_role.getId()" type="java.lang.Long"*/-->
-                    <input id="role_checkbox" type="checkbox" th:field="*{roles}"
-                           th:text="${possible_role.getName()}"
-                           th:value="${possible_role.getId()}" class="m-2"/>
-                </th:block>
-                <label for="role_checkbox">&nbsp;<b class="role_checkbox_error" id="role_checkbox_error"></b></label>
-            </div>
-        </div>
-
-        <div class="row">
-            <input id="submit" type="submit" value="Submit" onclick="checkRoleSelect(this)">
-        </div>
-    </form>
+    </div>
 </div>
 <script>
     let hasRole = false;
@@ -110,5 +198,15 @@
         }
     }
 </script>
+<!--============================================================================================================-->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 </body>
 </html>
