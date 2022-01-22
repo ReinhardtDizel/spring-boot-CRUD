@@ -34,11 +34,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updateUser(UserDto user, List<Role> roles) {
-        User updated = getUserByLogin(user.getLogin());
+        User updated = getUserByLogin(user.getEmail());
         if (updated != null) {
             if (Objects.equals(updated.getId(), user.getId())) {
-                updated.setName(user.getName());
-                updated.setLogin(user.getLogin());
+                updated.setFirstName(user.getFirstName());
+                updated.setLastName(user.getLastName());
+                updated.setAge(updated.getAge());
+                updated.setEmail(user.getEmail());
                 updated.setPassword(passwordEncoder.encode(user.getPassword()));
                 updated.setRoles(new HashSet<>(roles));
             } else {
@@ -54,7 +56,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByLogin(String s) {
-        return userRepository.findUserByLogin(s);
+        return userRepository.findUsersByEmail(s);
     }
 
     @Override
@@ -65,16 +67,17 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void saveUser(User user, List<Role> roles) {
-        if (getUserByLogin(user.getLogin()) == null) {
+        if (getUserByLogin(user.getEmail()) == null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRoles(new HashSet<>(roles));
             userRepository.save(user);
-            getUserByLogin(user.getLogin()).setRoles(new HashSet<>(roles));
         } else {
             throw new UserAlreadyExist();
         }
     }
 
     @Override
+    @Transactional
     public void deleteUser(long id) {
         userRepository.deleteById(id);
     }

@@ -1,8 +1,8 @@
 package kata.academy.config;
 
-import kata.academy.config.convereter.RolesListConverter;
-import kata.academy.dto.UserDto;
-import kata.academy.model.User;
+import kata.academy.config.convereter.RoleNameConverter;
+import kata.academy.dto.RoleDto;
+import kata.academy.model.Role;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration.AccessLevel;
 import org.modelmapper.convention.MatchingStrategies;
@@ -13,11 +13,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MapperConfig {
 
-    private RolesListConverter rolesListConverter;
+    private RoleNameConverter roleNameConverter;
 
     @Autowired
-    public void setRolesListConverter(RolesListConverter rolesListConverter) {
-        this.rolesListConverter = rolesListConverter;
+    public void setRoleNameConverter(RoleNameConverter roleNameConverter) {
+        this.roleNameConverter = roleNameConverter;
     }
 
     @Bean
@@ -27,9 +27,11 @@ public class MapperConfig {
                 .setMatchingStrategy(MatchingStrategies.LOOSE)
                 .setFieldAccessLevel(AccessLevel.PUBLIC);
 
-        mapper.typeMap(User.class, UserDto.class)
-                .addMappings(mapping -> mapping.using(rolesListConverter)
-                        .map(User::getRoles, UserDto::setRoles));
+
+        mapper.typeMap(Role.class, RoleDto.class)
+                .addMappings(mapping -> mapping.using(roleNameConverter)
+                        .map(Role::getName, RoleDto::setName));
+
         return mapper;
     }
 }

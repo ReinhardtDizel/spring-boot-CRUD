@@ -2,31 +2,61 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      lang="en">
+      lang="en"
+      class="h-100"
+>
 <head>
-    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
-    <link media="all" rel="stylesheet" th:href="@{/css/main.css}" type="text/css"/>
-    <title></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+          type="text/css">
+    <link media="all" rel="stylesheet" th:href="@{/css/pingendo.css}" type="text/css"/>
 </head>
-<body>
-<h1>Login page</h1>
-<div class="login-container">
-
-    <form class="login-container-form" method="post" >
-        <label for="username">Username</label>:
-        <input id="username" type="text" name="j_username"/>
-        <label for="password">Password</label>:
-        <input id="password" type="password" name="j_password"/>
-        <input type="submit" action="/login"/>
-
-        <a class="btn success" th:href="@{/signup}">
-            Sign Un
-        </a>
-        <a class="btn danger" th:href="@{/}">
-            Cancel
-        </a>
-
-    </form>
+<body class="h-100">
+<!--============================================================================================================-->
+<!--header-->
+<div class="w-100 py-2 bg-dark" style="">
+    <div class="container">
+        <div class="row">
+            <div class="d-md-flex justify-content-between align-items-center w-100">
+                <ul class="nav d-flex justify-content-center">
+                </ul>
+                <a class="link text-muted" href="#">Logout</a>
+            </div>
+        </div>
+    </div>
 </div>
+<!--============================================================================================================-->
+<div class="py-5 text-center">
+    <div class="container">
+        <div class="row">
+            <div class="mx-auto col-md-6 col-10 bg-white p-5">
+                <h1 class="mb-4">Please sign in</h1>
+                <form action="/login" method="post">
+                    <div class="form-group">
+                        <input name="j_username" type="email" class="form-control" placeholder="Enter email" id="form9">
+                    </div>
+                    <div class="form-group mb-3">
+                        <input name="j_password" type="password" class="form-control" placeholder="Password"
+                               id="form10">
+                    </div>
+                    <button type="submit" class="btn btn-lg btn-block btn-secondary">Sign in</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--============================================================================================================-->
+<!--footer-->
+<!--============================================================================================================-->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 </body>
 </html>

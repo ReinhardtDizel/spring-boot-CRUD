@@ -2,15 +2,12 @@
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
-    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
-    http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd "
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd"
         changeLogId="18de6cde-a117-4b70-a21f-992c9141b5c3">
 
-    <property name="app_admin_name" value="" file="liquibase.properties"/>
-    <property name="app_admin_login" value="" file="liquibase.properties"/>
+    <property name="app_admin_first_name" value="" file="liquibase.properties"/>
+    <property name="app_admin_last_name" value="" file="liquibase.properties"/>
+    <property name="app_admin_email" value="" file="liquibase.properties"/>
     <property name="app_admin_password" value="" file="liquibase.properties"/>
     <property name="app_admin_role" value="" file="liquibase.properties"/>
     <property name="app_user_role" value="" file="liquibase.properties"/>
@@ -20,10 +17,16 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="name" type="varchar2(255)">
+            <column name="first_name" type="varchar2(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="login" type="varchar2(255)">
+            <column name="last_name" type="varchar2(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="age" type="varchar2(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar2(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="password" type="varchar2(255)"/>
@@ -65,8 +68,10 @@
     <changeSet id="004_InsertInitialAppData" author="dizel">
         <insert tableName="user">
             <column name="id" type="bigint" value="1"/>
-            <column name="name" value="${app_admin_name}"/>
-            <column name="login" value="${app_admin_login}"/>
+            <column name="first_name" value="${app_admin_first_name}"/>
+            <column name="last_name" value="${app_admin_last_name}"/>
+            <column name="age" value="${app_admin_age}"/>
+            <column name="email" value="${app_admin_email}"/>
             <column name="password" value="${app_admin_password}"/>
         </insert>
         <insert tableName="role">

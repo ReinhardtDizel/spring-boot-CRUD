@@ -15,16 +15,21 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(nullable = false)
+    private String firstName;
 
-    @Column(name = "login", nullable = false)
-    private String login;
+    @Column(nullable = false)
+    private String lastName;
 
-    @Column(name = "password", nullable = false)
+    private String age;
+
+    @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -34,27 +39,44 @@ public class User implements UserDetails {
 
     private Set<Role> roles = new HashSet<>();
 
-    public User() {
-    }
-
     public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public String getLogin() {
-        return login;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Set<Role> getRoles() {
@@ -81,7 +103,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return email;
     }
 
     @Override
@@ -109,22 +131,12 @@ public class User implements UserDetails {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && name.equals(user.name) && login.equals(user.login) && password.equals(user.password);
+        return Objects.equals(id, user.id) && firstName.equals(user.firstName) && lastName.equals(user.lastName) && age.equals(user.age) && email.equals(user.email) && password.equals(user.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, login, password);
+        return Objects.hash(id, firstName, lastName, age, email, password);
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", roles=" + roles +
-                '}';
-    }
 }
