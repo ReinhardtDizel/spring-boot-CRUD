@@ -11,109 +11,408 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
           type="text/css">
     <link media="all" rel="stylesheet" th:href="@{/css/pingendo.css}" type="text/css"/>
-
+    <title></title>
 </head>
 
+<body class="h-100">
 <!--============================================================================================================-->
 <!--header-->
-<body class="h-100">
-<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+<div class="w-100 py-2 bg-dark" style="">
     <div class="container">
-        <button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse"
-                data-target="#navbar12">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbar12"><a class="navbar-brand d-none d-md-block" href="#">
-            <i class="fa d-inline fa-lg fa-circle"></i>
-            <b></b>
-        </a>
-            <ul class="navbar-nav mx-auto">
-                <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin
-                    Panel</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-            </ul>
-            <ul sec:authorize="!isAuthenticated()" class="navbar-nav">
-                <li class="nav-item"><a class="nav-link" th:href="@{/login}">Log in</a></li>
-                <li class="nav-item"><a class="nav-link text-primary" th:href="@{/signup}">Register</a></li>
-            </ul>
-            <ul sec:authorize="isFullyAuthenticated()" class="navbar-nav">
-                <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Log out</a></li>
-            </ul>
+        <div class="row">
+            <div class="d-md-flex justify-content-between align-items-center w-100">
+                <ul class="nav d-flex justify-content-center text-white bg-dark">
+                    <b th:text="${#authentication.principal.email} + ' ' + #{eu.with.role}"></b>
+                    <th:block th:each="role: ${#authentication.principal.roles}">
+                        <b th:text="${@roleToDtoMapper.convertRoleToDto(role).name}"></b>&nbsp;
+                    </th:block>
+                </ul>
+                <ul class="nav d-flex justify-content-center text-white bg-dark">
+                    <a sec:authorize="isFullyAuthenticated()" class="link text-muted" th:href="@{/logout}"
+                       th:text="#{eu.logout}"></a>
+                </ul>
+            </div>
         </div>
     </div>
-</nav>
+</div>
 <!--============================================================================================================-->
-<div class="py-5 text-center bg-dark text-white h-100"
-     style="	background-image: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url(https://pingendo.com/site-assets/cover.jpg);	background-position: top left, top left;	background-size: 100%, 100%;	background-repeat: repeat, repeat;	box-shadow: 0px 0px 4px  black;">
-    <div class="py-5 h-100">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="table-responsive">
-                        <table sec:authorize="hasRole('ROLE_ADMIN')" class="table table-striped table-dark">
-                            <thead>
-                            <tr>
-                                <th scope="col">id</th>
-                                <th scope="col">name</th>
-                                <th scope="col">login</th>
-                                <th scope="col">role</th>
-                                <th scope="col"></th>
-                                <th scope="col"></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <!--/*@thymesVar id="users" type="java.util.List<kata.academy.model.User>"*/-->
-                            <tr th:each="user: ${users}">
-                                <!--/*@thymesVar id="id" type="java.lang.Long"*/-->
-                                <td th:text="${user.id}"></td>
-                                <!--/*@thymesVar id="name" type="java.lang.String"*/-->
-                                <td th:text="${user.name}"></td>
-                                <!--/*@thymesVar id="login" type="java.lang.String"*/-->
-                                <td th:text="${user.login}"></td>
-                                <!--/*@thymesVar id="login" type="java.util.Set<kata.academy.model.Role>"*/-->
-                                <td th:text="${user.roles}"></td>
-                                <td>
-                                    <form action="#"
-                                          th:action="@{'user/delete/{id}'(id=${user.getId()})}"
-                                          th:method="delete">
-                                        <button name="delete" class="btn btn-outline-danger">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                 fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
-                                                <path fill-rule="evenodd"
-                                                      d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
-                                            </svg>
-                                            Delete
-                                        </button>
-                                        <input type="hidden" name="_method" value="delete">
-                                    </form>
-                                </td>
-                                <td>
-                                    <a class="btn btn-success" th:href="@{user/edit/{id}(id=${user.getId()})}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                             fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
-                                            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"></path>
-                                        </svg>
-                                        Edit
-                                    </a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+
+<div class="h-100 w-100" style="">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="h-100 w-100 col-md-2 p-0 mt-2">
+                <div class="list-group m-0 mx-0 p-0 px-0 w-100">
+                    <a th:href="@{/admin}" class="list-group-item active" th:text="#{eu.admin}"></a>
+                    <a th:href="@{/}" class="list-group-item" th:text="#{eu.user}"></a>
+                </div>
+            </div>
+            <div class="col-md-10 h-100 w-100 p-2  bg-info">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="pi-draggable">
+                            <b th:text="#{eu.admin.panel}"></b>
+                        </h1>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="float-right">
-                                <a class="btn btn-primary" th:href="@{/user/create}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                         fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
-                                        <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
-                                        <path fill-rule="evenodd"
-                                              d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"></path>
-                                    </svg>
-                                    Create User
-                                </a>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="pi-wrapper pi-draggable" draggable="true">
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <a class="active nav-link" href="" data-toggle="tab"
+                                       data-target="#tabone" th:text="#{eu.users.table}"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="" class="nav-link" data-toggle="tab"
+                                       data-target="#tabtwo" th:text="#{eu.new.user}"></a>
+                                </li>
+                            </ul>
+                            <div class="tab-content mt-2">
+                                <div class="tab-pane fade show active" id="tabone" role="tabpanel">
+                                    <h5 class="pi-draggable pl-1">
+                                        <b th:text="#{eu.all.users}"></b>
+                                    </h5>
+                                    <div class="table-responsive pi-draggable" draggable="true">
+                                        <table class="table table-striped table-borderless">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col" th:text="#{eu.id}"></th>
+                                                <th scope="col" th:text="#{eu.name.first}"></th>
+                                                <th scope="col" th:text="#{eu.name.last}"></th>
+                                                <th scope="col" th:text="#{eu.age}"></th>
+                                                <th scope="col" th:text="#{eu.email}"></th>
+                                                <th scope="col" th:text="#{eu.role}"></th>
+                                                <th scope="col" th:text="#{eu.edit}"></th>
+                                                <th scope="col" th:text="#{eu.delete}"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="user: ${users}">
+                                                <td th:text="${user.id}"></td>
+                                                <td th:text="${user.firstName}"></td>
+                                                <td th:text="${user.lastName}"></td>
+                                                <td th:text="${user.age}"></td>
+                                                <td th:text="${user.email}"></td>
+                                                <td>
+                                                    <span th:each="role: ${user.roles}">
+                                                        <small th:text="${@roleToDtoMapper.convertRoleToDto(role).name}"></small>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <form>
+                                                        <button type="button" class="btn btn-primary"
+                                                                data-toggle="modal"
+                                                                data-target="#user-edit-modal" data-whatever="@mdo"
+                                                                th:attr="data-target=${'#user-edit-modal'+user.id}"
+                                                                th:text="#{eu.edit}">
+
+                                                        </button>
+                                                        <input type="hidden" name="_method" value="edit">
+                                                        <!--modal -->
+                                                        <div id="user-edit-modal" class="modal fade" tabindex="-1"
+                                                             aria-labelledby="user-edit-modal-label" aria-hidden="true"
+                                                             th:each="user: ${users}"
+                                                             th:attr="id=${'user-edit-modal' + user.id}">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title"
+                                                                            id="user-edit-modal-label"
+                                                                            th:text="#{eu.edit.user}"></h5>
+                                                                        <button type="button" class="close"
+                                                                                data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <form th:method="POST"
+                                                                              th:action="@{/admin/edit}">
+                                                                            <div class="form-group">
+                                                                                <label for="user-id"
+                                                                                       class="col-form-label"
+                                                                                       th:text="#{eu.id}"></label>
+                                                                                <input required type="text"
+                                                                                       class="form-control"
+                                                                                       id="user-id"
+                                                                                       th:value="${user.id}"
+                                                                                       th:name="id">
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="user-first-name"
+                                                                                       class="col-form-label"
+                                                                                       th:text="#{eu.name.first}"></label>
+                                                                                <input required type="text"
+                                                                                       class="form-control"
+                                                                                       id="user-first-name"
+                                                                                       th:value="${user.firstName}"
+                                                                                       th:name="firstName">
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="user-last-name"
+                                                                                       class="col-form-label"
+                                                                                       th:text="#{eu.name.last}"></label>
+                                                                                <input required type="text"
+                                                                                       class="form-control"
+                                                                                       id="user-last-name"
+                                                                                       th:value="${user.lastName}"
+                                                                                       th:name="lastName">
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="user-age"
+                                                                                       class="col-form-label"
+                                                                                       th:text="#{eu.age}"></label>
+                                                                                <input required type="text"
+                                                                                       class="form-control"
+                                                                                       id="user-age"
+                                                                                       th:value="${user.age}"
+                                                                                       th:name="age">
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="user-email"
+                                                                                       class="col-form-label"
+                                                                                       th:text="#{eu.email}"></label>
+                                                                                <input required type="text"
+                                                                                       class="form-control"
+                                                                                       id="user-email"
+                                                                                       th:value="${user.email}"
+                                                                                       th:name="email">
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="user-password"
+                                                                                       class="col-form-label"
+                                                                                       th:text="#{eu.password}"></label>
+                                                                                <input required type="password"
+                                                                                       class="form-control"
+                                                                                       id="user-password"
+                                                                                       value=""
+                                                                                       th:name="password">
+                                                                            </div>
+                                                                            <div class="form-group mb-3">
+                                                                                <label for="user-role"
+                                                                                       class="col-form-label"
+                                                                                       th:text="#{eu.role}"></label>
+                                                                                <select multiple
+                                                                                        id="user-role"
+                                                                                        class="form-select w-100"
+                                                                                        size="3"
+                                                                                        aria-label="size 3 select example"
+                                                                                        th:value="${user.roles}"
+                                                                                        th:name="roles">
+                                                                                    <option value="1"
+                                                                                            th:each="possible_role: ${possible_roles}"
+                                                                                            th:text="${@roleToDtoMapper.convertRoleToDto(possible_role).name}"
+                                                                                            th:value="${possible_role.id}">
+                                                                                    </option>
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button"
+                                                                                        class="btn btn-secondary"
+                                                                                        data-dismiss="modal"
+                                                                                        th:text="#{eu.close}">
+                                                                                </button>
+                                                                                <button type="submit"
+                                                                                        class="btn btn-primary"
+                                                                                        th:text="#{eu.edit}">
+                                                                                </button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+
+                                                </td>
+                                                <td>
+                                                    <form>
+                                                        <button type="button" class="btn btn-danger"
+                                                                data-toggle="modal"
+                                                                data-target="#user-delete-modal" data-whatever="@mdo"
+                                                                th:attr="data-target=${'#user-delete-modal'+user.id}"
+                                                                th:text="#{eu.delete}">
+                                                        </button>
+                                                        <input type="hidden" name="_method" value="delete">
+                                                        <!--modal -->
+                                                        <div id="user-delete-modal" class="modal fade" tabindex="-1"
+                                                             aria-labelledby="user-delete-modal-label"
+                                                             aria-hidden="true"
+                                                             th:each="user: ${users}"
+                                                             th:attr="id=${'user-delete-modal' + user.id}">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title"
+                                                                            id="user-delete-modal-label"
+                                                                            th:text="#{eu.delete.user}">
+                                                                        </h5>
+                                                                        <button type="button" class="close"
+                                                                                data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <form th:method="POST"
+                                                                              th:action="@{/admin/delete/__${user.id}__}">
+                                                                            <div class="form-group">
+                                                                                <label for="user-delete-id"
+                                                                                       class="col-form-label"
+                                                                                       th:text="#{eu.id}">
+                                                                                </label>
+                                                                                <input readonly type="text"
+                                                                                       class="form-control"
+                                                                                       id="user-delete-id"
+                                                                                       th:value="${user.id}">
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="user-delete-first-name"
+                                                                                       class="col-form-label"
+                                                                                       th:text="#{eu.name.first}">
+                                                                                </label>
+                                                                                <input readonly type="text"
+                                                                                       class="form-control"
+                                                                                       id="user-delete-first-name"
+                                                                                       th:value="${user.firstName}">
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="user-delete-last-name"
+                                                                                       class="col-form-label"
+                                                                                       th:text="#{eu.name.last}">
+                                                                                </label>
+                                                                                <input readonly type="text"
+                                                                                       class="form-control"
+                                                                                       id="user-delete-last-name"
+                                                                                       th:value="${user.lastName}">
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="user-delete-age"
+                                                                                       class="col-form-label"
+                                                                                       th:text="#{eu.age}">
+                                                                                </label>
+                                                                                <input readonly type="text"
+                                                                                       class="form-control"
+                                                                                       id="user-delete-age"
+                                                                                       th:value="${user.age}">
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="user-delete-email"
+                                                                                       class="col-form-label"
+                                                                                       th:text="#{eu.email}">
+                                                                                </label>
+                                                                                <input readonly type="text"
+                                                                                       class="form-control"
+                                                                                       id="user-delete-email"
+                                                                                       th:value="${user.email}">
+                                                                            </div>
+                                                                            <div class="form-group mb-3">
+                                                                                <label for="user-delete-role"
+                                                                                       class="col-form-label"
+                                                                                       th:text="#{eu.role}">
+                                                                                </label>
+                                                                                <select disabled
+                                                                                        id="user-delete-role"
+                                                                                        class="form-select w-100"
+                                                                                        size="3"
+                                                                                        aria-label="size 3 select example"
+                                                                                        th:value="${user.roles}"
+                                                                                        th:name="roles">
+                                                                                    <option value="1"
+                                                                                            th:each="role: ${user.roles}"
+                                                                                            th:text="${@roleToDtoMapper.convertRoleToDto(role).name}">
+                                                                                    </option>
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button"
+                                                                                        class="btn btn-secondary"
+                                                                                        data-dismiss="modal"
+                                                                                        th:text="#{eu.close}">
+                                                                                </button>
+                                                                                <button type="submit"
+                                                                                        class="btn btn-danger"
+                                                                                        th:text="#{eu.delete}">
+                                                                                </button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="tabtwo" role="tabpanel">
+                                    <h5 class="pi-draggable pl-1">
+                                        <b th:text="#{eu.add.new.user}"></b>
+                                    </h5>
+                                    <div class="py-5 text-center pi-draggable"
+                                         style="background-image: url('https://static.pingendo.com/cover-bubble-dark.svg');background-size:cover;"
+                                         draggable="true">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="mx-auto col-md-6 col-10 bg-white p-5">
+                                                    <form th:action="@{'/admin/create'}"
+                                                          method="post"
+                                                          th:object="${new_user}">
+                                                        <h6 class="pi-draggable">
+                                                            <b th:text="#{eu.name.first}"></b>
+                                                        </h6>
+                                                        <div class="form-group">
+                                                            <input required type="text" class="form-control" id="form9"
+                                                                   th:field="*{firstName}">
+                                                        </div>
+                                                        <h6 class="pi-draggable">
+                                                            <b th:text="#{eu.name.last}"></b>
+                                                        </h6>
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control" id="form11"
+                                                                   th:field="*{lastName}">
+                                                        </div>
+                                                        <h6 class="pi-draggable">
+                                                            <b th:text="#{eu.age}"></b>
+                                                        </h6>
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control" id="form12"
+                                                                   th:field="*{age}">
+                                                        </div>
+                                                        <h6 class="pi-draggable">
+                                                            <b th:text="#{eu.email}"></b>
+                                                        </h6>
+                                                        <div class="form-group">
+                                                            <input type="email" class="form-control" id="form13"
+                                                                   th:field="*{email}">
+                                                        </div>
+                                                        <h6 class="pi-draggable">
+                                                            <b th:text="#{eu.password}"></b>
+                                                        </h6>
+                                                        <div class="form-group mb-3">
+                                                            <input type="password" class="form-control" id="form14"
+                                                                   th:field="*{password}">
+                                                        </div>
+                                                        <div class="form-group mb-3">
+                                                            <select class="form-select w-100" size="3"
+                                                                    aria-label="size 3 select example"
+                                                                    th:field="*{roles}">
+                                                                <option value="1"
+                                                                        th:each="possible_role: ${possible_roles}"
+                                                                        th:text="${@roleToDtoMapper.convertRoleToDto(possible_role).name}"
+                                                                        th:value="${possible_role.id}">
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary w-50"
+                                                                th:text="#{eu.create}">
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
