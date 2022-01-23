@@ -7,9 +7,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
+
 @Controller
-@RequestMapping("/")
-public class MainController {
+@RequestMapping("/user")
+public class UserController {
 
     private UserService userService;
 
@@ -19,9 +22,10 @@ public class MainController {
     }
 
     @GetMapping
-    public String hello(Model model) {
-
-        model.addAttribute("users", userService.getAll());
-        return "index";
+    public String hello(Model model,
+                        HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
+        model.addAttribute("users", userService.getUserByLogin(principal.getName()));
+        return "user";
     }
 }
