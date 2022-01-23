@@ -61,7 +61,7 @@ public class AdminController {
             model.addAttribute("user", user);
             model.addAttribute("possible_roles", roleService.getAll());
 
-            model.addAttribute("error", "такой login уже есть!");
+            model.addAttribute("error", "такой email уже есть!");
         }
         return "admin";
     }
@@ -73,7 +73,7 @@ public class AdminController {
             return "redirect:/admin";
         } catch (UserAlreadyExist exception) {
             model.addAttribute("possible_roles", roleService.getAll());
-            model.addAttribute("error", "такой login уже есть!");
+            model.addAttribute("error", "такой email уже есть!");
         }
         return "redirect:/admin";
     }
