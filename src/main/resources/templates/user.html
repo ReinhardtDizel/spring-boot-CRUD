@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
           type="text/css">
-    <link media="all" rel="stylesheet" th:href="@{/css/pingendo.css}" type="text/css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 
 <body class="h-100">
@@ -21,7 +21,7 @@
         <div class="row">
             <div class="d-md-flex justify-content-between align-items-center w-100">
                 <ul class="nav d-flex justify-content-center text-white bg-dark">
-                    <b th:text="${#authentication.principal.email} + ' ' + #{en-US.with_role}"></b>
+                    <b th:text="${#authentication.principal.email} + ' ' + #{en-US.with_role}"></b>&nbsp;
                     <th:block th:each="role: ${#authentication.principal.roles}">
                         <b th:text="${@roleToDtoMapper.convertRoleToDto(role).name}"></b>&nbsp;
                     </th:block>
@@ -45,7 +45,7 @@
                     <a th:href="@{/user}" class="list-group-item active">User</a>
                 </div>
             </div>
-            <div class="col-md-10 h-100 w-100 p-2 bg-info">
+            <div class="col-md-10 h-100 w-100 p-2 bg-light">
                 <div class="row">
                     <div class="col-md-12">
                         <h1 class="pi-draggable">
