@@ -22,6 +22,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserSecurityDetailsService securityDetailsService;
 
+    private LoginSuccessHandler loginSuccessHandler;
+
+    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+
+    @Autowired
+    public void setCustomAuthenticationFailureHandler(CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
+        this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
+    }
+
+    @Autowired
+    public void setLoginSuccessHandler(LoginSuccessHandler loginSuccessHandler) {
+        this.loginSuccessHandler = loginSuccessHandler;
+    }
+
     @Autowired
     public void setSecurityDetailsService(UserSecurityDetailsService securityDetailsService) {
         this.securityDetailsService = securityDetailsService;
@@ -47,8 +61,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // указываем страницу с формой логина
                 .loginPage("/login")
                 //указываем логику обработки при логине
-                .successHandler(new LoginSuccessHandler())
-                .failureHandler(new CustomAuthenticationFailureHandler())
+                .successHandler(loginSuccessHandler)
+                .failureHandler(customAuthenticationFailureHandler)
                 // указываем action с формы логина
                 .loginProcessingUrl("/login")
                 // Указываем параметры логина и пароля с формы логина
@@ -63,7 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // указываем URL логаута
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 // указываем URL при удачном логауте
-                .logoutSuccessUrl("/?logout")
+                .logoutSuccessUrl("/login")
                 //выклчаем кроссдоменную секьюрность (на этапе обучения неважна)
                 .and().csrf().disable();
 
@@ -71,12 +85,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // делаем страницу регистрации недоступной для авторизированных пользователей
                 .authorizeRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .antMatchers("/").permitAll()
                 .antMatchers("/signup").anonymous()
                 //страницы аутентификаци доступна всем
                 .antMatchers("/login").anonymous()
                 // защищенные URL
-                .antMatchers("/admin").access("hasAnyRole('ROLE_ADMIN')").anyRequest().authenticated();
+                .antMatchers("/user/**").access("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+                .antMatchers("/admin/**").access("hasAnyRole('ROLE_ADMIN')")
+                .anyRequest().authenticated();
     }
 
     @Bean

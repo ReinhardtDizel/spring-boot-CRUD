@@ -67,14 +67,15 @@ public class UserServiceImpl implements UserService {
     public void saveUser(User user, List<Role> roles) {
         if (getUserByLogin(user.getLogin()) == null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRoles(new HashSet<>(roles));
             userRepository.save(user);
-            getUserByLogin(user.getLogin()).setRoles(new HashSet<>(roles));
         } else {
             throw new UserAlreadyExist();
         }
     }
 
     @Override
+    @Transactional
     public void deleteUser(long id) {
         userRepository.deleteById(id);
     }

@@ -14,17 +14,6 @@ public class UserDto {
 
     private List<Long> roles;
 
-    public UserDto() {
-    }
-
-    public UserDto(Long id, String name, String login, String password, List<Long> roles) {
-        this.id = id;
-        this.name = name;
-        this.login = login;
-        this.password = password;
-        this.roles = roles;
-    }
-
     public Long getId() {
         return id;
     }

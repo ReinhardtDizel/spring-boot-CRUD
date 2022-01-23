@@ -13,9 +13,9 @@
 <div>
     <!--Навигационная панель с logout-->
     <div class="topnav">
-        <a th:href="@{/}">Home</a>
+        <a th:href="@{/user}">Home</a>
         <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin Panel</a>
-        <a class="active" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/user/create}">Add User</a>
+        <a class="active" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin/create}">Add User</a>
         <div class="login-panel-container">
             <div sec:authorize="isFullyAuthenticated()">
                 <form class="login-panel-form" action="/logout">
@@ -32,7 +32,7 @@
     <!---------------------------------->
 </div>
 <div class="container">
-    <form id="create_form" sec:authorize="hasRole('ROLE_ADMIN')" th:action="@{/user/create}" method="post"
+    <form id="create_form" sec:authorize="hasRole('ROLE_ADMIN')" th:action="@{/admin/create}" method="post"
           th:object="${user}">
         <h2>Add new User Form</h2>
         <div class="row">
@@ -70,13 +70,19 @@
                 <label>Roles:</label>
             </div>
             <div class="col-75">
-                <!--/*@thymesVar id="possible_roles" type="java.util.List<kata.academy.model.Role>"*/-->
-                <th:block th:each="possible_role: ${possible_roles}">
-                    <!--/*@thymesVar id="possible_role" type="kata.academy.model.Role"*/-->
-                    <!--/*@thymesVar id="roles" type="java.util.Set<kata.academy.model.Role>"*/-->
-                    <input id="role_checkbox" type="checkbox" th:field="*{roles}" th:text="${possible_role.name}"
-                           th:value="${possible_role.id}" class="m-2"/>
-                </th:block>
+                <select multiple
+                        id="role_checkbox"
+                        class="form-select w-100"
+                        size="3"
+                        aria-label="size 3 select example"
+                        th:value="${user.roles}"
+                        th:name="roles">
+                    <option value="1"
+                            th:each="possible_role: ${possible_roles}"
+                            th:text="${@roleToDtoMapper.convertRoleToDto(possible_role).name}"
+                            th:value="${possible_role.id}">
+                    </option>
+                </select>
                 <label for="role_checkbox">&nbsp;<b class="role_checkbox_error" id="role_checkbox_error"></b></label>
             </div>
         </div>
@@ -95,7 +101,7 @@
     let hasRole = false;
 
     function checkRoleSelect() {
-        let checkboxes = document.querySelectorAll('input:checked');
+        let checkboxes = document.querySelectorAll('option:checked');
         if (checkboxes.length > 0) {
             hasRole = true;
         }

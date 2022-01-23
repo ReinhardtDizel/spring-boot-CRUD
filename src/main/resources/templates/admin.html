@@ -13,9 +13,9 @@
 <div>
     <!--Навигационная панель с logout-->
     <div class="topnav">
-        <a th:href="@{/}">Home</a>
+        <a th:href="@{/user}">Home</a>
         <a class="active" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin Panel</a>
-        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/user/create}">Add User</a>
+        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin/create}">Add User</a>
         <div class="login-panel-container">
             <div sec:authorize="isFullyAuthenticated()">
                 <form class="login-panel-form" action="/logout">
@@ -40,19 +40,18 @@
             <th></th>
             <th></th>
         </tr>
-        <!--/*@thymesVar id="users" type="java.util.List<kata.academy.model.User>"*/-->
         <tr th:each="user: ${users}">
-            <!--/*@thymesVar id="id" type="java.lang.Long"*/-->
             <td th:text="${user.id}"></td>
-            <!--/*@thymesVar id="name" type="java.lang.String"*/-->
             <td th:text="${user.name}"></td>
-            <!--/*@thymesVar id="login" type="java.lang.String"*/-->
             <td th:text="${user.login}"></td>
-            <!--/*@thymesVar id="login" type="java.util.Set<kata.academy.model.Role>"*/-->
-            <td th:text="${user.roles}"></td>
+            <td>
+                <span th:each="role: ${user.roles}">
+                    <small th:text="${@roleToDtoMapper.convertRoleToDto(role).name}"></small>
+                </span>
+            </td>
             <td>
                 <form action="#"
-                      th:action="@{'user/delete/{id}'(id=${user.getId()})}"
+                      th:action="@{/admin/delete/__${user.id}__}"
                       th:method="deleteUser">
                     <button class="btn danger" name="delete">
                         <i class="fa fa-trash">
@@ -63,7 +62,7 @@
                 </form>
             </td>
             <td>
-                <a th:href="@{user/edit/{id}(id=${user.getId()})}">
+                <a th:href="@{admin/edit/__${user.id}__}">
                     <button class="btn success" name="edit">
                         edit
                     </button>
