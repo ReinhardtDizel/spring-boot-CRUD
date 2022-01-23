@@ -1,20 +1,30 @@
 package kata.academy.controller;
 
+import kata.academy.model.User;
 import kata.academy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 
-@Controller
+@RestController
 @RequestMapping("/user")
 public class UserController {
 
     private UserService userService;
+
+    private RestTemplate template;
+
+    @Autowired
+    public void setTemplate(RestTemplate template) {
+        this.template = template;
+    }
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -22,10 +32,11 @@ public class UserController {
     }
 
     @GetMapping
-    public String hello(Model model,
-                        HttpServletRequest request) {
+    public ResponseEntity<User> hello(HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
-        model.addAttribute("users", userService.getUserByLogin(principal.getName()));
-        return "user";
+        User user = userService.getUserByLogin(principal.getName());
+        return user != null
+                ? new ResponseEntity<>(user, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
