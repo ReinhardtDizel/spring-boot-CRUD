@@ -34,20 +34,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUser(UserDto user, List<Role> roles) {
-        User updated = getUserByLogin(user.getEmail());
+    public User updateUser(UserDto user, List<Role> roles) {
+        User updated = getById(user.getId());
         if (updated != null) {
-            if (Objects.equals(updated.getId(), user.getId())) {
-                updated.setFirstName(user.getFirstName());
-                updated.setLastName(user.getLastName());
-                updated.setAge(updated.getAge());
-                updated.setEmail(user.getEmail());
-                updated.setPassword(passwordEncoder.encode(user.getPassword()));
-                updated.setRoles(new HashSet<>(roles));
-            } else {
-                throw new UserAlreadyExist();
+            if (getUserByLogin(user.getEmail()) != null) {
+                if (!Objects.equals(updated.getId(), getUserByLogin(user.getEmail()).getId())) {
+                    throw new UserAlreadyExist();
+                }
             }
+            updated.setFirstName(user.getFirstName());
+            updated.setLastName(user.getLastName());
+            updated.setAge(updated.getAge());
+            updated.setEmail(user.getEmail());
+            updated.setPassword(passwordEncoder.encode(user.getPassword()));
+            updated.setRoles(new HashSet<>(roles));
+            return updated;
         }
+        return null;
     }
 
     @Override
@@ -56,13 +59,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable("data")
     public User getUserByLogin(String s) {
         return userRepository.findUsersByEmail(s);
     }
 
     @Override
-    @Cacheable("data")
     public List<User> getAll() {
         return userRepository.findAll();
     }
@@ -81,7 +82,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(long id) {
-        userRepository.deleteById(id);
+    public int deleteUser(long id) {
+        return userRepository.deleteById(id);
     }
 }

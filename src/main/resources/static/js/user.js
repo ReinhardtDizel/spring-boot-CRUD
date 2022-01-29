@@ -1,4 +1,4 @@
-import {User, Role} from "./model.js";
+import {User} from "./model.js";
 import {getUser} from "./api.js";
 
 $(document).ready(function () {

@@ -23,6 +23,7 @@ public class Role implements GrantedAuthority {
 
     @Transient
     @JsonIgnoreProperties("roles")
+    @JsonIgnore
     private Set<User> users = new HashSet<>();
 
     public Role() {

@@ -7,7 +7,7 @@ import kata.academy.model.User;
 import java.util.List;
 
 public interface UserService {
-    void updateUser(UserDto user, List<Role> roles);
+    User updateUser(UserDto user, List<Role> roles);
 
     User getById(long id);
 
@@ -17,6 +17,6 @@ public interface UserService {
 
     User saveUser(User user, List<Role> roles);
 
-    void deleteUser(long id);
+    int deleteUser(long id);
 }
 

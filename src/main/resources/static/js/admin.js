@@ -1,74 +1,83 @@
-import {Role, User} from "./model.js";
-import {getAll, getRoles, saveUser} from "./api.js";
+import {User} from "./model.js";
+import {deleteUser, editUser, getAll, getRoles, saveUser} from "./api.js";
 import * as message from "./message.js";
 
 $(document).ready(function () {
-    let users = [];
-    let possibleRoles = [];
-    getRoles().then(data => {
-        $.each(data, function (key, value) {
-            let role = new Role();
-            role.id = value.id
-            role.name = value.name;
-            possibleRoles.push(role);
-        })
-        $('#createUserContainer')
-            .append($('<form id="createUserForm" method="post">')
-                .append(createUser(possibleRoles))
-                .append($('<button type="submit" class="btn btn-primary w-50">').text(message.TEXT_CREATE))
-                .submit(function (event) {
-                    event.preventDefault();
-                    const dataArray = $(this).serializeArray(),
-                        dataObj = new User();
-                    console.log(dataArray)
-                    $(dataArray).each(function (i, field) {
-                        dataObj[field.name] = field.value;
-                    });
-                    console.log(dataObj)
-                }))
-    })
-
-    getAll().then(data => {
-        data.forEach((u) => {
-            let user = new User();
-            user = u
-            user.roles = u.roles
-            users.push(u);
-        })
-        users.forEach((value, index) => {
-            $('#admin-table').find('tbody')
-                .append($('<tr>').attr('id', 'user_row_' + index)
-                    .append($('<td>').text(value.id))
-                    .append($('<td>').text(value.firstName))
-                    .append($('<td>').text(value.lastName))
-                    .append($('<td>').text(value.age))
-                    .append($('<td>').text(value.email))
-                    .append($('<td>').attr('id', 'role_col' + index))
-                    .append($('<td>').attr('id', 'edit_col' + index))
-                    .append($('<td>').attr('id', 'delete_col' + index))
-                )
-            value.roles.forEach(r => {
-                $('#role_col' + index)
-                    .append($('<span>')
-                        .append($('<small>').text(r.name.replace("ROLE_", "") + " "))
-                    )
-            })
-            $('#edit_col' + index).append($(modalEdit(index, value)))
-            $('#delete_col' + index).append($(modalDelete(index, value)))
-        })
-    });
+    adminTable();
+    createUser();
 });
 
-function createUser(value) {
-    return ($(inputForm('firstName', 'text', message.TEXT_NAME_FIRST, 'firstName', '', false)))
+function adminTable() {
+    $('#admin-table').find('tbody').empty();
+    getAll().then(data => {
+        $.each(data, function (key, value) {
+            $('#admin-table').find('tbody')
+                .append(userRowForAdminTable(value))
+        })
+    })
+}
+
+function userRowForAdminTable(user) {
+    let rolesViewText = $('<span>')
+    $.each(user.roles, function (i, role) {
+        $(rolesViewText)
+            .append($('<small>').text(role.name.replace("ROLE_", "") + " "))
+    })
+    return $('<tr>').attr('id', 'user_row_' + user.id).append($('<td>').text(user.id))
+        .append($('<td>').text(user.firstName))
+        .append($('<td>').text(user.lastName))
+        .append($('<td>').text(user.age))
+        .append($('<td>').text(user.email))
+        .append($('<td>').attr('id', 'role_col' + user.id)
+            .append($(rolesViewText)))
+        .append($('<td>').attr('id', 'edit_col' + user.id)
+            .append($(modalEdit(user.id, user))))
+        .append($('<td>').attr('id', 'delete_col' + user.id)
+            .append($(modalDelete(user.id, user)))
+        );
+}
+
+function createUser() {
+
+    let createUserForm = ($(inputForm('firstName', 'text', message.TEXT_NAME_FIRST, 'firstName', '', false)))
         .append($(inputForm('lastName', 'text', message.TEXT_NAME_LAST, 'lastName', '', false)))
         .append($(inputForm('age', 'text', message.TEXT_AGE, 'age', '', false)))
         .append($(inputForm('email', 'text', message.TEXT_EMAIL, 'email', '', false)))
         .append($(inputForm('password', 'password', message.TEXT_PASSWORD, 'password', '', false)))
-        .append($(selectedForm('roles', message.TEXT_ROLE, value, false)))
+        .append($(selectedFormWithRoles('-roles', message.TEXT_ROLE)))
+
+    $('#createUserContainer')
+        .append($('<form id="createUserForm" method="post">')
+            .append($(createUserForm))
+            .append($('<button type="submit" class="btn btn-primary w-50">').text(message.TEXT_CREATE))
+            .submit(function (event) {
+                event.preventDefault();
+
+                const dataObj = createDto($(this));
+                saveUser(dataObj).then(u => {
+                    $('.nav-tabs a[data-target="#tabone"]').tab('show');
+                    $('#admin-table').find('tbody')
+                        .append(userRowForAdminTable(u))
+                })
+            })
+        );
+}
+
+function createDto(element) {
+    const result = new User();
+    const dataArray = $(element).serializeArray();
+    $(dataArray).each(function (i, field) {
+        if (field.name !== 'roles') {
+            result[field.name] = field.value;
+        } else {
+            result.setRoles = field.value;
+        }
+    });
+    return result;
 }
 
 function modalEdit(id, value) {
+
     return $('<form>')
         .append($('<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#user-edit-modal" data-whatever="@mdo"></button>')
             .attr('data-target', '#user-edit-modal' + id)
@@ -82,12 +91,23 @@ function modalEdit(id, value) {
                         .append($('<h5 class="modal-title" id="user-edit-modal-label">').text(message.TEXT_EDIT_USER))
                         .append('<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>'))
                     .append($(' <div class="modal-body">')
-                        .append($('<form method="post">')
-                            .append($(getForms('-edit' + id, value, false)))
+                        .append($('<form method="post">').attr('id', 'user-edit-modal-form' + id)
+                            .submit(function (event) {
+                                event.preventDefault();
+                                const dataObj = createDto($(this));
+                                editUser(dataObj).then(b => {
+                                    adminTable();
+                                })
+                                $('#user-edit-modal' + id).modal('hide')
+                                $('body').removeClass('modal-open');
+                                $('.modal-backdrop').remove();
+                            })
+                            .append($(getInputForms('-edit' + id, value, false)))
+                            .append($(selectedFormWithRoles('-roles' + id, message.TEXT_ROLE, value.roles)))
                             .append($('<div class="modal-footer">')
                                 .append($('<button type="button" class="btn btn-secondary" data-dismiss="modal">').text(message.TEXT_CLOSE))
-                                .append($('<button type="submit" class="btn btn-primary">').text(message.TEXT_EDIT)))
-                        )))))
+                                .append($('<button type="submit" class="btn btn-primary">').text(message.TEXT_EDIT)
+                                )))))))
 }
 
 function modalDelete(id, value) {
@@ -104,21 +124,32 @@ function modalDelete(id, value) {
                         .append($('<h5 class="modal-title" id="user-delete-modal-label">').text(message.TEXT_DELETE_USER))
                         .append('<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>'))
                     .append($(' <div class="modal-body">')
-                        .append($('<form method="post">')
-                            .append($(getForms('-delete' + id, value, true)
-                                .append($('<div class="modal-footer">')
-                                    .append($('<button type="button" class="btn btn-secondary" data-dismiss="modal">').text(message.TEXT_CLOSE))
-                                    .append($('<button type="submit" class="btn btn-danger">').text(message.TEXT_DELETE))))))))))
+                        .append($('<form method="post">').attr('id', 'user-delete-modal-form' + id)
+                            .submit(function (event) {
+                                event.preventDefault();
+                                const userId = $(this).find('input[name="id"]').val();
+                                deleteUser(userId).then(b => {
+                                    adminTable();
+                                })
+                                $('#user-delete-modal' + id).modal('hide')
+                                $('body').removeClass('modal-open');
+                                $('.modal-backdrop').remove();
+                            })
+                            .append($(getInputForms('-delete' + id, value, true)))
+                            .append($(selectedForm(id, message.TEXT_ROLE, value.roles, true)))
+                            .append($('<div class="modal-footer">')
+                                .append($('<button type="button" class="btn btn-secondary" data-dismiss="modal">').text(message.TEXT_CLOSE))
+                                .append($('<button type="submit" class="btn btn-danger">').text(message.TEXT_DELETE))
+                            ))))));
 }
 
-function getForms(id, value, disable) {
+function getInputForms(id, value, disable) {
     return ($(inputForm(id, 'text', message.TEXT_ID, 'id', value.id, disable)))
         .append($(inputForm(id, 'text', message.TEXT_NAME_FIRST, 'firstName', value.firstName, disable)))
         .append($(inputForm(id, 'text', message.TEXT_NAME_LAST, 'lastName', value.lastName, disable)))
         .append($(inputForm(id, 'text', message.TEXT_AGE, 'age', value.age, disable)))
         .append($(inputForm(id, 'text', message.TEXT_EMAIL, 'email', value.email, disable)))
         .append($(inputForm(id, 'password', message.TEXT_PASSWORD, 'password', value.password, disable)))
-        .append($(selectedForm(id, message.TEXT_ROLE, value.roles, disable)))
 }
 
 function inputForm(id, type, text, name, value, disable) {
@@ -131,6 +162,24 @@ function inputForm(id, type, text, name, value, disable) {
         .append($(input));
 }
 
+function selectedFormWithRoles(id, text, roles) {
+    let select = $('<select multiple class="form-select w-100" size="3" aria-label="size 3 select example" name="roles">').attr('id', 'user-role' + id);
+    getRoles().then(data => {
+        $.each(data, function (i, role) {
+            $(select)
+                .append($('<option>', {
+                    value: role.id,
+                    text: role.name.replace("ROLE_", "")
+                }))
+        });
+        $.each(roles, function (i, role) {
+            $(select).find('option[value=' + role.id + ']').attr('selected', 'true')
+        })
+    })
+    return $('<div class="form-group mb-3">')
+        .append($('<label>').attr('for', 'user-role' + id).text(text)).append($(select))
+}
+
 function selectedForm(id, text, roles, disabled) {
     let select = $('<select multiple class="form-select w-100" size="3" aria-label="size 3 select example" name="roles">').attr('id', 'user-role' + id);
     if (disabled === true) {
@@ -140,7 +189,7 @@ function selectedForm(id, text, roles, disabled) {
         $(select)
             .append($('<option>', {
                 value: role.id,
-                text: role.name
+                text: role.name.replace("ROLE_", "")
             }));
     });
     return $('<div class="form-group mb-3">')

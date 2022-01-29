@@ -19,14 +19,57 @@ export async function saveUser(user) {
     const url = "http://localhost:8080/rest/admin";
     try {
         const response = await fetch(url, {
+            responseType: "json",
             method: 'POST',
             body: JSON.stringify(user),
             headers: {
-                'Content-Type': 'application/json'
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE",
+                "Access-Control-Allow-Credentials": true,
+                "Content-Type": "application/json"
             }
         });
-        const json = await response.json();
-        console.log('Успех:', JSON.stringify(json));
+        return await response.json();
+    } catch (error) {
+        console.error('Ошибка:', error);
+    }
+}
+
+export async function editUser(user) {
+    const url = "http://localhost:8080/rest/admin";
+    try {
+        const response = await fetch(url, {
+            responseType: "json",
+            method: 'PUT',
+            body: JSON.stringify(user),
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE",
+                "Access-Control-Allow-Credentials": true,
+                "Content-Type": "application/json"
+            }
+        });
+        return await response.json();
+    } catch (error) {
+        console.error('Ошибка:', error);
+    }
+}
+
+export async function deleteUser(id) {
+    const url = "http://localhost:8080/rest/admin";
+    try {
+        const response = await fetch(url, {
+            responseType: "json",
+            method: 'DELETE',
+            body: JSON.stringify(id),
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE",
+                "Access-Control-Allow-Credentials": true,
+                "Content-Type": "application/json"
+            }
+        });
+        return await response.json();
     } catch (error) {
         console.error('Ошибка:', error);
     }
