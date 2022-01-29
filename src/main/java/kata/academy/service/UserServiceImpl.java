@@ -6,6 +6,7 @@ import kata.academy.model.Role;
 import kata.academy.model.User;
 import kata.academy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,22 +56,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable("data")
     public User getUserByLogin(String s) {
         return userRepository.findUsersByEmail(s);
     }
 
     @Override
+    @Cacheable("data")
     public List<User> getAll() {
         return userRepository.findAll();
     }
 
     @Override
     @Transactional
-    public void saveUser(User user, List<Role> roles) {
+    public User saveUser(User user, List<Role> roles) {
         if (getUserByLogin(user.getEmail()) == null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRoles(new HashSet<>(roles));
-            userRepository.save(user);
+            return userRepository.save(user);
         } else {
             throw new UserAlreadyExist();
         }

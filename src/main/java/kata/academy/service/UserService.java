@@ -15,7 +15,7 @@ public interface UserService {
 
     List<User> getAll();
 
-    void saveUser(User user, List<Role> roles);
+    User saveUser(User user, List<Role> roles);
 
     void deleteUser(long id);
 }
