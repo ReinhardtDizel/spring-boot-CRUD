@@ -42,7 +42,7 @@
                 <ul class="nav d-flex justify-content-center text-white bg-dark">
                     <b th:text="${#authentication.principal.email} + ' ' + #{en-US.with_role}"></b>&nbsp;
                     <th:block th:each="role: ${#authentication.principal.roles}">
-                        <b th:text="${@roleToDtoMapper.convertRoleToDto(role).name}"></b>&nbsp;
+                        <b th:text="${#strings.replace(role.name, 'ROLE_', '')}"></b>&nbsp;
                     </th:block>
                 </ul>
                 <ul class="nav d-flex justify-content-center text-white bg-dark">

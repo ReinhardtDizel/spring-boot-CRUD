@@ -19,7 +19,6 @@
             crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.19.1/bootstrap-table.min.js"></script>
-    <script type="module" th:src="@{/js/user.js}"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
           type="text/css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -37,7 +36,7 @@
                 <ul class="nav d-flex justify-content-center text-white bg-dark">
                     <b th:text="${#authentication.principal.email} + ' ' + #{en-US.with_role}"></b>&nbsp;
                     <th:block th:each="role: ${#authentication.principal.roles}">
-                        <b th:text="${@roleToDtoMapper.convertRoleToDto(role).name}"></b>&nbsp;
+                        <b th:text="${#strings.replace(role.name, 'ROLE_', '')}"></b>&nbsp;
                     </th:block>
                 </ul>
                 <ul class="nav d-flex justify-content-center text-white bg-dark">
@@ -86,7 +85,20 @@
                                             <th data-field="roles" th:text="#{en-US.role}"></th>
                                         </tr>
                                         </thead>
-                                        <tbody></tbody>
+                                        <tbody>
+                                        <tr>
+                                            <td th:text="${#authentication.principal.id}"></td>
+                                            <td th:text="${#authentication.principal.firstName}"></td>
+                                            <td th:text="${#authentication.principal.lastName}"></td>
+                                            <td th:text="${#authentication.principal.age}"></td>
+                                            <td th:text="${#authentication.principal.email}"></td>
+                                            <td>
+                                                    <span th:each="role: ${#authentication.principal.roles}">
+                                                        <small th:text="${#strings.replace(role.name, 'ROLE_', '')}"></small>
+                                                    </span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>

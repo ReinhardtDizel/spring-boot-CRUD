@@ -149,7 +149,7 @@ function getInputForms(id, value, disable) {
         .append($(inputForm(id, 'text', message.TEXT_NAME_LAST, 'lastName', value.lastName, disable)))
         .append($(inputForm(id, 'text', message.TEXT_AGE, 'age', value.age, disable)))
         .append($(inputForm(id, 'text', message.TEXT_EMAIL, 'email', value.email, disable)))
-        .append($(inputForm(id, 'password', message.TEXT_PASSWORD, 'password', value.password, disable)))
+        .append($(inputForm(id, 'password', message.TEXT_PASSWORD, 'password', "", disable)))
 }
 
 function inputForm(id, type, text, name, value, disable) {

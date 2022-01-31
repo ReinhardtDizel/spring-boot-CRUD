@@ -11,8 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(
@@ -35,45 +35,39 @@ public class AdminRestController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAll(HttpServletRequest request) {
-        List<User> users = userService.getAll();
-        return users != null
-                ? new ResponseEntity<>(users, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<List<User>> getAll() {
+        return Optional
+                .ofNullable(userService.getAll())
+                .map(users -> ResponseEntity.ok().body(users))
+                .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody UserDto user) {
-        User createdUser = new User();
-        createdUser.setFirstName(user.getFirstName());
-        createdUser.setLastName(user.getLastName());
-        createdUser.setAge(user.getAge());
-        createdUser.setEmail(user.getEmail());
-        createdUser.setPassword(user.getPassword());
         try {
-            createdUser = userService.saveUser(createdUser, roleService.getRoleById(user.getRoles()));
-            return createdUser != null
-                    ? new ResponseEntity<>(createdUser, HttpStatus.OK)
-                    : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return Optional
+                    .ofNullable(userService.saveUser(user, roleService.getRoleById(user.getRoles())))
+                    .map(u -> ResponseEntity.ok().body(u))
+                    .orElseGet(() -> ResponseEntity.badRequest().build());
         } catch (UserAlreadyExist exist) {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Юзер с таким email уже есть");
         }
     }
 
     @PutMapping
     public ResponseEntity<?> edit(@RequestBody UserDto user) {
         try {
-            User editedUser = userService.updateUser(user, roleService.getRoleById(user.getRoles()));
-            return editedUser != null
-                    ? new ResponseEntity<>(editedUser, HttpStatus.OK)
-                    : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+            return Optional
+                    .ofNullable(userService.updateUser(user, roleService.getRoleById(user.getRoles())))
+                    .map(u -> ResponseEntity.ok().body(u))
+                    .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_MODIFIED).build());
         } catch (UserAlreadyExist exist) {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Юзер с таким email уже есть");
         }
     }
 
-    @DeleteMapping
-    public int delete(@RequestBody Long id) {
+    @DeleteMapping("/{id}")
+    public int delete(@PathVariable Long id) {
         return userService.deleteUser(id);
     }
 }

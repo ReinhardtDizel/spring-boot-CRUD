@@ -1,20 +1,3 @@
-export async function getUser() {
-    const url = "http://localhost:8080/rest/user";
-    return await fetch(url, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-        .then(response => response.json()).then(data => {
-            return data;
-        })
-        .catch(error => {
-            console.error(error);
-
-        });
-}
-
 export async function saveUser(user) {
     const url = "http://localhost:8080/rest/admin";
     try {
@@ -56,12 +39,11 @@ export async function editUser(user) {
 }
 
 export async function deleteUser(id) {
-    const url = "http://localhost:8080/rest/admin";
+    const url = "http://localhost:8080/rest/admin/" + id;
     try {
         const response = await fetch(url, {
             responseType: "json",
             method: 'DELETE',
-            body: JSON.stringify(id),
             headers: {
                 "Access-Control-Allow-Origin": "*",
                 "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE",
