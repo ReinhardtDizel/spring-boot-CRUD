@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User saveUser(UserDto user, List<Role> roles) {
+    public void saveUser(UserDto user, List<Role> roles) {
         if (getUserByLogin(user.getEmail()) == null) {
             User createdUser = new User(user.getFirstName(),
                     user.getLastName(),
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
                     user.getEmail(),
                     passwordEncoder.encode(user.getPassword()),
                     new HashSet<>(roles));
-            return userRepository.save(createdUser);
+            userRepository.save(createdUser);
         } else {
             throw new UserAlreadyExist();
         }
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User updateUser(UserDto user, List<Role> roles) {
+    public void updateUser(UserDto user, List<Role> roles) {
         User updated = getById(user.getId());
         if (updated != null) {
             if (getUserByLogin(user.getEmail()) != null) {
@@ -78,14 +78,12 @@ public class UserServiceImpl implements UserService {
             updated.setEmail(user.getEmail());
             updated.setPassword(passwordEncoder.encode(user.getPassword()));
             updated.setRoles(new HashSet<>(roles));
-            return updated;
         }
-        return null;
     }
 
     @Override
     @Transactional
-    public int deleteUser(long id) {
-        return userRepository.deleteById(id);
+    public void deleteUser(long id) {
+        userRepository.deleteById(id);
     }
 }

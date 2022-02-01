@@ -54,10 +54,9 @@ function createUser() {
                 event.preventDefault();
 
                 const dataObj = createDto($(this));
-                saveUser(dataObj).then(u => {
+                saveUser(dataObj).then(() => {
+                    adminTable();
                     $('.nav-tabs a[data-target="#tabone"]').tab('show');
-                    $('#admin-table').find('tbody')
-                        .append(userRowForAdminTable(u))
                 })
             })
         );
@@ -95,7 +94,7 @@ function modalEdit(id, value) {
                             .submit(function (event) {
                                 event.preventDefault();
                                 const dataObj = createDto($(this));
-                                editUser(dataObj).then(b => {
+                                editUser(dataObj).then(() => {
                                     adminTable();
                                 })
                                 $('#user-edit-modal' + id).modal('hide')
@@ -128,7 +127,7 @@ function modalDelete(id, value) {
                             .submit(function (event) {
                                 event.preventDefault();
                                 const userId = $(this).find('input[name="id"]').val();
-                                deleteUser(userId).then(b => {
+                                deleteUser(userId).then(() => {
                                     adminTable();
                                 })
                                 $('#user-delete-modal' + id).modal('hide')
