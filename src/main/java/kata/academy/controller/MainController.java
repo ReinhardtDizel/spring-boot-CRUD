@@ -10,6 +10,6 @@ public class MainController {
 
     @GetMapping
     public String greetings() {
-        return "redirect:/user";
+        return "user";
     }
 }

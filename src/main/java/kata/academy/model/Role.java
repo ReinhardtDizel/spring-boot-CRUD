@@ -22,9 +22,6 @@ public class Role implements GrantedAuthority {
     @Transient
     private Set<User> users = new HashSet<>();
 
-    public Role() {
-    }
-
     public Long getId() {
         return id;
     }

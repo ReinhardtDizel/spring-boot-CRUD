@@ -32,24 +32,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public void updateUser(UserDto user, List<Role> roles) {
-        User updated = getUserByLogin(user.getEmail());
-        if (updated != null) {
-            if (Objects.equals(updated.getId(), user.getId())) {
-                updated.setFirstName(user.getFirstName());
-                updated.setLastName(user.getLastName());
-                updated.setAge(updated.getAge());
-                updated.setEmail(user.getEmail());
-                updated.setPassword(passwordEncoder.encode(user.getPassword()));
-                updated.setRoles(new HashSet<>(roles));
-            } else {
-                throw new UserAlreadyExist();
-            }
-        }
-    }
-
-    @Override
     public User getById(long id) {
         return userRepository.findUserById(id);
     }
@@ -66,13 +48,36 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void saveUser(User user, List<Role> roles) {
+    public void saveUser(UserDto user, List<Role> roles) {
         if (getUserByLogin(user.getEmail()) == null) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setRoles(new HashSet<>(roles));
-            userRepository.save(user);
+            User createdUser = new User(user.getFirstName(),
+                    user.getLastName(),
+                    user.getAge(),
+                    user.getEmail(),
+                    passwordEncoder.encode(user.getPassword()),
+                    new HashSet<>(roles));
+            userRepository.save(createdUser);
         } else {
             throw new UserAlreadyExist();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateUser(UserDto user, List<Role> roles) {
+        User updated = getById(user.getId());
+        if (updated != null) {
+            if (getUserByLogin(user.getEmail()) != null) {
+                if (!Objects.equals(updated.getId(), getUserByLogin(user.getEmail()).getId())) {
+                    throw new UserAlreadyExist();
+                }
+            }
+            updated.setFirstName(user.getFirstName());
+            updated.setLastName(user.getLastName());
+            updated.setAge(updated.getAge());
+            updated.setEmail(user.getEmail());
+            updated.setPassword(passwordEncoder.encode(user.getPassword()));
+            updated.setRoles(new HashSet<>(roles));
         }
     }
 
